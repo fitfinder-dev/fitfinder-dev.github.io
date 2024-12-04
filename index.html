@@ -10,13 +10,27 @@
       const appUrl = "fitfinder://"; // Replace with your app's custom scheme (e.g., fitfinder://)
       const appStoreUrl = "https://apps.apple.com/us/app/fitfinder/id6483939610"; // Replace with your App Store link
 
-      // Attempt to open the app
-      window.location.href = appUrl;
-
-      // Fallback to App Store link if the app is not installed
-      setTimeout(() => {
+      // Create a timeout to redirect to the App Store if the app doesn't open
+      const fallbackTimeout = setTimeout(() => {
         window.location.href = appStoreUrl;
-      }, 1500); // Wait 1.5 seconds to check if the app opened
+      }, 1500); // Wait 1.5 seconds
+
+      // Attempt to open the app using an iframe
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none"; // Hide the iframe
+      iframe.src = appUrl;
+      document.body.appendChild(iframe);
+
+      // Clear the fallback if the user navigates away from the page (indicating the app opened)
+      window.addEventListener("blur", () => {
+        clearTimeout(fallbackTimeout);
+        // Optional: Close the window if the app opened successfully
+        try {
+          window.close();
+        } catch (e) {
+          console.log("Unable to close the window: ", e);
+        }
+      });
     });
   </script>
 </head>
