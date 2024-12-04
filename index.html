@@ -1,1 +1,31 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitFinder Redirect</title>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Replace with your app's custom URL scheme and App Store link
+      const appUrl = "fitfinder://"; // Replace with your app's custom scheme (e.g., fitfinder://)
+      const appStoreUrl = "https://apps.apple.com/us/app/fitfinder/id6483939610"; // Replace with your App Store link
+
+      // Attempt to open the app
+      window.location.href = appUrl;
+
+      // Fallback to App Store link if the app is not installed
+      setTimeout(() => {
+        window.location.href = appStoreUrl;
+      }, 1500); // Wait 1.5 seconds to check if the app opened
+    });
+  </script>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+  <p>If you are not redirected automatically, <a id="fallback-link" href="#">click here</a>.</p>
+  <script>
+    // Update the fallback link
+    document.getElementById("fallback-link").href = "https://apps.apple.com/us/app/fitfinder/id6483939610"; // Replace with your App Store link
+  </script>
+</body>
+</html>
