@@ -8,14 +8,18 @@
     document.addEventListener("DOMContentLoaded", function () {
       const userId = window.location.hash.substring(1); // Removes the '#' character
       if (userId && isValidUUID(userId)) {
-        // Replace with your app's custom URL scheme and App Store link
-        const appUrl = `fitfinder://${userId}`;
+        // Build the JSON object for the deep link
+        const props = JSON.stringify({ id: userId });
+        const encodedProps = encodeURIComponent(props);
+
+        // Construct the app URL
+        const appUrl = `fitfinder://trainer/${encodedProps}`;
         const appStoreUrl = "https://apps.apple.com/us/app/fitfinder/id6483939610";
 
         // Create a timeout to redirect to the App Store if the app doesn't open
         const fallbackTimeout = setTimeout(() => {
           window.location.href = appStoreUrl;
-        }, 3500); // Wait 1.5 seconds
+        }, 3500); // Wait 3.5 seconds
 
         // Attempt to open the app
         window.location.href = appUrl;
@@ -39,10 +43,9 @@
 </head>
 <body>
   <h1>Redirecting...</h1>
-  <p>If you are not redirected automatically, <a id="fallback-link" href="#">click here</a>.</p>
+  <p>If you are not redirected automatically after 5 seconds, <a id="fallback-link" href="#">click here</a>.</p>
   <script>
-    // Update the fallback link
-    document.getElementById("fallback-link").href = "https://apps.apple.com/us/app/fitfinder/id6483939610"; // Replace with your App Store link
+    document.getElementById("fallback-link").href = "https://apps.apple.com/us/app/fitfinder/id6483939610";
   </script>
 </body>
 </html>
