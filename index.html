@@ -6,28 +6,24 @@
   <title>FitFinder Redirect</title>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const userId = window.location.hash.substring(1); // Removes the '#' character
+      const userId = window.location.hash.substring(1);
       if (userId && isValidUUID(userId)) {
-        // Build the JSON object for the deep link
         const props = JSON.stringify({ id: userId });
         const encodedProps = encodeURIComponent(props);
-
-        // Construct the app URL
         const appUrl = `fitfinder://trainer/${encodedProps}`;
         const appStoreUrl = "https://apps.apple.com/us/app/fitfinder/id6483939610";
 
-        // Create a timeout to redirect to the App Store if the app doesn't open
         const fallbackTimeout = setTimeout(() => {
           window.location.href = appStoreUrl;
-        }, 3500); // Wait 3.5 seconds
+          closeWindow();
+        }, 3500);
 
-        // Attempt to open the app
         window.location.href = appUrl;
 
-        // Clear the fallback if the user navigates away from the page (indicating the app opened)
         window.addEventListener("visibilitychange", () => {
           if (document.visibilityState === "hidden") {
             clearTimeout(fallbackTimeout);
+            closeWindow();
           }
         });
       } else {
@@ -37,6 +33,14 @@
       function isValidUUID(uuid) {
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         return uuidRegex.test(uuid);
+      }
+
+      function closeWindow() {
+        try {
+          window.close();
+        } catch (e) {
+          console.log("Unable to close the window: ", e);
+        }
       }
     });
   </script>
