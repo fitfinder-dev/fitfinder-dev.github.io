@@ -78,29 +78,41 @@
   </style>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const userId = window.location.hash.substring(1);
-      if (userId && isValidUUID(userId)) {
-        const props = JSON.stringify({ id: userId });
-        const encodedProps = encodeURIComponent(props);
-        const appUrl = `fitfinder://trainer/${encodedProps}`;
-        const appStoreUrl = "https://apps.apple.com/us/app/fitfinder/id6483939610";
-
-        const fallbackTimeout = setTimeout(() => {
-          window.location.href = appStoreUrl;
-          closeWindow();
-        }, 8000);
-
-        window.location.href = appUrl;
-
-        window.addEventListener("visibilitychange", () => {
-          if (document.visibilityState === "hidden") {
-            clearTimeout(fallbackTimeout);
-            closeWindow();
-          }
-        });
+      const hash = window.location.hash.substring(1);
+      let appUrl, isHome = false;
+      
+      // Detect Android users
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      
+      // Set platform-specific URLs
+      const appStoreUrl = isAndroid ? 
+        "https://play.google.com/store/apps/details?id=com.humancemil.jsx.fitfinderapp&hl=en_CA" :
+        "https://apps.apple.com/us/app/fitfinder/id6483939610";
+  
+      // Handle different link types
+      if (hash === "home") {
+        appUrl = "fitfinder://home";
+      } else if (isValidUUID(hash)) {
+        const props = JSON.stringify({ id: hash });
+        appUrl = `fitfinder://trainer/${encodeURIComponent(props)}`;
       } else {
-        console.error("Invalid or missing user ID.");
+        console.error("Invalid or unrecognized link");
+        return;
       }
+  
+      const fallbackTimeout = setTimeout(() => {
+        window.location.href = appStoreUrl;
+        closeWindow();
+      }, 8000);
+  
+      window.location.href = appUrl;
+  
+      window.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+          clearTimeout(fallbackTimeout);
+          closeWindow();
+        }
+      });
 
       function isValidUUID(uuid) {
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -111,7 +123,7 @@
         try {
           window.close();
         } catch (e) {
-          console.log("Unable to close the window: ", e);
+          console.log("Unable to close window: ", e);
         }
       }
     });
