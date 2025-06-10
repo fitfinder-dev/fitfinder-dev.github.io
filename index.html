@@ -95,6 +95,10 @@
       } else if (isValidUUID(hash)) {
         const props = JSON.stringify({ id: hash });
         appUrl = `fitfinder://trainer/${encodeURIComponent(props)}`;
+      } else if (hash.startsWith("chat")) {
+        // Extract the otherUser data from the hash
+        const otherUserData = hash.split("=")[1];
+        appUrl = `fitfinder://chat?otherUser=${otherUserData}`;
       } else {
         console.error("Invalid or unrecognized link");
         return;
